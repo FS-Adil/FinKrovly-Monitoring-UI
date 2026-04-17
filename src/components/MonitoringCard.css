@@ -1,0 +1,53 @@
+.monitoring-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.monitoring-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-header {
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-info h3 {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.count-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.card-arrow {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.card-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.card-content {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.empty-table {
+  padding: 30px;
+  text-align: center;
+  color: #ccc;
+  font-size: 0.8rem;
+}
