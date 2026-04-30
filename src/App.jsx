@@ -1,10 +1,58 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import MonitoringCard from './components/MonitoringCard';
 import SettingsPanel from './components/SettingsPanel';
 import { fetchOrdersFromAPI } from './services/api';
 
 function App() {
+
+  // Внутри компонента App monitoring приложения
+  // В App.jsx monitoring приложения
+const containerRef = useRef(null);
+const heightSentRef = useRef(false);
+
+useEffect(() => {
+  let timeoutId = null;
+  
+  const sendHeight = () => {
+  // Измеряем ВЕСЬ документ, а не только контейнер
+  const body = document.body;
+  const html = document.documentElement;
+  
+  const height = Math.max(
+    body.scrollHeight,
+    body.offsetHeight,
+    html.clientHeight,
+    html.scrollHeight,
+    html.offsetHeight
+  );
+  
+  console.log(`📤 [Monitoring] Полная высота документа: ${height}px`);
+  window.parent.postMessage({ type: 'RESIZE', height }, '*');
+};
+
+  // Отправляем READY только один раз
+  window.parent.postMessage({ type: 'READY' }, '*');
+
+  // Начальная отправка
+  sendHeight();
+
+  // Наблюдатель с debounce
+  const observer = new ResizeObserver(sendHeight);
+  if (containerRef.current) {
+    observer.observe(containerRef.current);
+  }
+
+  return () => {
+    if (timeoutId) clearTimeout(timeoutId);
+    observer.disconnect();
+  };
+}, []);
+
+
+
+
+
   const [expandedCard, setExpandedCard] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -165,7 +213,7 @@ function App() {
   };
 
   return (
-    <div className="app">
+    <div ref={containerRef} className="app" style={{ minHeight: '100vh' }}>
       <div className="app-header">
         <h1>Контроль выполнения заказов</h1>
         <SettingsPanel
